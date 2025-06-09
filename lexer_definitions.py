@@ -10,7 +10,8 @@ class TipoToken(Enum):
   CERRAR_PARENTESIS = 4,
   IGUAL = 5,
   PALABRA_CLAVE = 6,
-  COMA = 7
+  COMA = 7,
+  STRING = 8
   
 # Ahora creamos la clase Token
 class Token:
@@ -32,7 +33,8 @@ keywords = [
   "si",
   "mientras",
   "como",
-  "fin"
+  "fin",
+  "entonces",
 ]
 
 # Precedencia de los operadores, tambien usado para verificar
@@ -45,5 +47,7 @@ def precedencia(operador) -> int:
       return 4
     case '+' | '-' | '–':
       return 3
+    case '==' | '!=' | '<' | '>' | '<=' | '>=':
+      return 2
     case _:
       return -1

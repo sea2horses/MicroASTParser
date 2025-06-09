@@ -37,6 +37,10 @@ class Parser:
             return self.declaracion_funcion()
         elif token.Tipo == TipoToken.PALABRA_CLAVE and token.Valor == "retornar":
             return self.retorno()
+        elif token.Tipo == TipoToken.PALABRA_CLAVE and token.Valor == "si":
+            return self.ifexpresion()
+        elif token.Tipo == TipoToken.PALABRA_CLAVE and token.Valor == "mientras":
+            return self.whileexpresion()
         else:
             return self.expresion()
 
@@ -83,7 +87,7 @@ class Parser:
                 op = token.Valor
                 self.avanzar()
                 derecha = self.expresion_binaria(self.prioridad(op) + 1)
-                izquierda = ast.ExpresionBinariaAST(op, izquierda, derecha)
+                izquierda = ast.ExpresionBinariaAST(izquierda, op, derecha)
             else:
                 break
         return izquierda
@@ -98,6 +102,9 @@ class Parser:
         if token.Tipo == TipoToken.NUMERO:
             self.avanzar()
             return ast.NumeroAST(token.Valor)
+        elif token.Tipo == TipoToken.STRING:
+            self.avanzar()
+            return ast.StringAST(token.Valor)
         elif token.Tipo == TipoToken.VARIABLE:
             self.avanzar()
             if self.actual() and self.actual().Tipo == TipoToken.ABRIR_PARENTESIS:
@@ -110,6 +117,34 @@ class Parser:
             return expr
         else:
             raise Exception(f"Token inesperado: {token}")
+    
+    def ifexpresion(self):
+        self.consumir(TipoToken.PALABRA_CLAVE)
+        condicion = self.expresion()
+        # Consumir 'entonces'
+        self.consumir(TipoToken.PALABRA_CLAVE)
+        # Cuerpo verdadero
+        verdadero = []
+        while self.actual() and not (self.actual().Tipo == TipoToken.PALABRA_CLAVE and self.actual().Valor == "fin"):
+            verdadero.append(self.declaracion())
+        # Consumir 'fin'
+        self.consumir(TipoToken.PALABRA_CLAVE)
+        # Crear el AST de la expresión if
+        return ast.IfAST(condicion, verdadero)
+    
+    def whileexpresion(self):
+        self.consumir(TipoToken.PALABRA_CLAVE)
+        condicion = self.expresion()
+        # Consumir 'entonces'
+        self.consumir(TipoToken.PALABRA_CLAVE)
+        # Cuerpo del bucle
+        cuerpo = []
+        while self.actual() and not (self.actual().Tipo == TipoToken.PALABRA_CLAVE and self.actual().Valor == "fin"):
+            cuerpo.append(self.declaracion())
+        # Consumir 'fin'
+        self.consumir(TipoToken.PALABRA_CLAVE)
+        # Crear el AST del bucle while
+        return ast.WhileAST(condicion, cuerpo)
 
     def llamada_funcion(self, nombre):
         self.consumir(TipoToken.ABRIR_PARENTESIS)

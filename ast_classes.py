@@ -71,8 +71,8 @@ class ExpresionBinariaAST(NodoAST):
 
     def to_pretty_str(self, nivel=0):
         s = "-" * nivel + f"ExpresionBinariaAST"
-        s += "\n" + pretty_attr(self.Op, nivel + 1, "Op")
         s += "\n" + pretty_attr(self.Izquierda, nivel + 1, "Izquierda")
+        s += "\n" + pretty_attr(self.Op, nivel + 1, "Op")
         s += "\n" + pretty_attr(self.Derecha, nivel + 1, "Derecha")
         return s
 

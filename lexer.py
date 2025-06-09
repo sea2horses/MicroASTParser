@@ -29,6 +29,7 @@ def tokenizar(source: str) -> list[Token] | None:
         tokens.append(Token(TipoToken.VARIABLE, string_identificador))
         
       continue
+  
 
     # Números (incluyendo decimales)
     if caracter.isdigit() or (caracter == '.' and posicion + 1 < len(source) and source[posicion + 1].isdigit()):
@@ -46,6 +47,28 @@ def tokenizar(source: str) -> list[Token] | None:
       except ValueError:
         print(f"Error, número inválido: '{string_numero}'")
         return None
+      continue
+
+    # Comillas para cadenas de texto
+    if caracter == '"':
+      posicion += 1
+      string_cadena = ''
+      while posicion < len(source) and source[posicion] != '"':
+        if source[posicion] == '\\' and posicion + 1 < len(source):
+          # Manejar secuencias de escape
+          posicion += 1
+          if source[posicion] in ['"', '\\', 'n', 't']:
+            string_cadena += source[posicion]
+        else:
+          string_cadena += source[posicion]
+        posicion += 1
+      if posicion < len(source) and source[posicion] == '"':
+        tokens.append(Token(TipoToken.STRING, string_cadena))
+        posicion += 1  # Saltar la comilla final
+      else:
+        print("Error, cadena de texto no cerrada")
+        return None
+      
       continue
 
     # Paréntesis

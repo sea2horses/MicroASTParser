@@ -10,7 +10,11 @@ funcion suma(a, b)
     retornar a + b
 fin
 
-suma(5,x)
+definir y = suma(5,x)
+
+si y > 5 entonces
+    imprimir("Hola")
+fin
 """
 
 # Analizar el código fuente
