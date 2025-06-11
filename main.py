@@ -14,7 +14,7 @@ if __name__ == "__main__":
     definir y = suma(5,x)
 
     si y > 5 entonces
-        imprimir("Hola")
+        imprimir("Hola", "como estas")
     fin
     """
 
