@@ -27,7 +27,7 @@ class Parser:
         nodos = []
         while self.actual() is not None:
             nodos.append(self.declaracion())
-        return nodos
+        return ast.ProgramaAST(nodos)
 
     def declaracion(self):
         token = self.actual()
